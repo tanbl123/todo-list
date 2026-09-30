@@ -8,7 +8,7 @@
         body {font-family: system-ui, sans-serif; margin: 24px; }
         .pass {color: #16a34a; }
         .fail { color: #dc2626; font-weight: bold; }
-        #summary {font-size: 1.2 rem; font-weight: bold; margin-top: 16px;}
+        #summary {font-size: 1.2rem; font-weight: bold; margin-top: 16px;}
     </style>
 </head>
 <body>
@@ -51,7 +51,7 @@
                 failed++;
                 line.className = "fail";
                 line.textContent = "✗ " + description +
-                    "- expected " + JSON.stringify(expected) +
+                    " - expected " + JSON.stringify(expected) +
                     ", got " + JSON.stringify(actual);
             }
             results.appendChild(line);
@@ -124,7 +124,7 @@
         
         // ---------- Summary ----------
         document.getElementById("summary").textContent = 
-            passed + "passed. " + failed + " failed";
+            passed + " passed, " + failed + " failed";
         document.getElementById("summary").className = failed === 0 ? "pass" :"fail";
     </script>
 </body>
