@@ -1,0 +1,357 @@
+/*
+styles.css - appearance of the To-Do List
+
+Colours are defined once as variables (below), so the whole theme can
+be changed in one place.
+Priority is shown in two ways: a coloured badge and a coloured left
+edge on each task. Completed tasks are faded and crossed out.
+*/
+
+:root{
+    --color-background:      #f4f5f7;
+    --color-card:           #ffffff;
+    --color-text:           #1f2933;
+    --color-muted:          #6b7280;
+    --color-border:         #d9dde3;
+    --color-primary:        #2563eb;
+    --color-primary-dark:   #1d4ed8;
+    --color-danger:         #dc2626;
+
+    --color-high:   #dc2626;   /* red   */
+    --color-medium: #d97706;   /* amber */
+    --color-low:    #16a34a;   /* green */
+
+    --radius: 8px;
+}
+
+/* ---------- Base ---------- */
+
+* {
+    box-sizing: border-box; /* padding is included in an element's width */
+}
+
+body{
+    margin: 0;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--color-background);
+    color: var(--color-text);
+    line-height: 1.5;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.container {
+    max-width: 720px;   /* keeps lines readable on wide screens */
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+h1{
+    margin: 0 0 24px;
+    text-align: center;
+}
+
+/* ---------- Form ---------- */
+#task-form{
+    display: flex;
+    flex-direction: column; /* stack the fields vertically */
+    gap: 12px;
+    background: var(--color-card);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+}
+
+#task-form label{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+#task-form input,
+#task-form textarea,
+#task-form select{
+    font: inherit;
+    font-weight: normal;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+
+#task-form textarea{
+    resize: vertical;   /* allow resizing up/down only */
+}
+
+/* Visible outline when a field is selected (important for keyboard users) */
+#task-form input:focus,
+#task-form textarea:focus,
+#task-form select:focus{
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+    border-color: var(--color-primary);
+}
+
+/* ---------- Buttons ---------- */
+button {
+    font: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: var(--radius);
+    padding: 8px 14px;
+}
+
+#submit-button {
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+}
+
+#submit-button:hover{
+    background: var(--color-primary-dark);
+}
+
+#cancel-button {
+    background: transparent;
+    color: var(--color-muted);
+    border: 1px solid var(--color-border);
+}
+
+.edit-button {
+    background: #e5e7eb;
+    color: var(--color-text);
+}
+
+.delete-button {
+    background: transparent;
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger);
+}
+
+.delete-button:hover {
+    background: var(--color-danger);
+    color: white;
+}
+
+button:focus-visible{
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ---------- Task list ---------- */
+#task-list {
+    list-style: none;   /* remove the bullet points */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--color-card);
+    padding: 16px;
+    border-radius: var(--radius);
+    border-left: 5px solid var(--color-border); /* coloured by priority below */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.task input[type="checkbox"]{
+    width: 20px;
+    height: 20px;
+    margin-top: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.task-content {
+    flex:1;
+    min-width: 0;
+}
+
+.task-content h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+}
+
+.task-content p{
+    margin: 4px 0 0;
+    color: var(--color-muted);
+    overflow-wrap: anywhere;
+    white-space: pre-line;  /* keep line breaks typed in the description */
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* ---------- Priority ---------- */
+.priority{
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 999px;   /* pill shape */
+}
+
+.priority-high {
+    background: var(--color-high);
+}
+
+.priority-medium {
+    background: var(--color-medium);
+}
+
+.priority-low {
+    background: var(--color-low);
+}
+
+.priority-border-high {
+    border-left-color: var(--color-high);
+}
+
+.priority-border-medium {
+    border-left-color: var(--color-medium);
+}
+
+.priority-border-low {
+    border-left-color: var(--color-low);
+}
+
+/* ---------- Completed tasks ---------- */
+
+.task.completed {
+    opacity: 0.6;
+}
+
+.task.completed h3 {
+    text-decoration: line-through;
+    color: var(--color-muted);
+}
+
+/* ---------- Empty state ---------- */
+#empty-message {
+    text-align: center;
+    color: var(--color-muted);
+    padding: 24px;
+}
+
+/* ---------- Animations ---------- */
+/*
+Animations give feedback on what just changed. Only the task that
+changed is animated (app.js adds the class to that one task), because
+renderTasks() rebuilds the whole list on every change.
+*/
+
+/* Buttons change colour smoothly on hover */
+button {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+@keyframes task-enter {
+    from {opacity: 0; transform: translateY(-10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.task-enter{
+    animation: task-enter 0.3s ease-out;
+}
+
+/* A task that was just completed or edited briefly glows */
+@keyframes task-changed{
+    0% {box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.4);}
+    100% {box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);}
+}
+
+.task-changed {
+    animation: task-changed 0.6s ease-out;
+}
+
+/* A deleted task fades and slides out before it is removed */
+@keyframes task-leave {
+    to {opacity: 0; transform: translateX(20px);}
+}
+
+.task-leave {
+    animation: task-leave 0.25s ease-in forwards;
+}
+
+/*
+Respect the user's system setting to reduce motion (some people get
+dizzy or distracted by animations). Animations are shortened to almost
+nothing rather than removed, so the "animationend" event that the
+delete button waits for still fires.
+*/
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ---------- Responsive design (small screens) ---------- */
+/*
+On screens 600px wide or less (most phones), the layout is adjusted:
+- less empty space around the page
+- each task's badge and buttons move onto their own line below the
+  title, so the title keeps the full width
+- buttons become larger and easier to tap with a finger
+*/
+
+@media (max-width: 600px){
+    .container {
+        margin: 16px auto;
+        padding: 0 12px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+        margin-bottom: 16px;
+    }
+
+    #task-form{
+        padding: 16px;
+    }
+
+    /* Allow the task's parts to wrap onto several lines */
+    .task {
+        flex-wrap: wrap;
+    }
+
+    /* Move the badge and buttons below the title, full width */
+    .task-actions {
+        width: 100%;
+        padding-left: 36px; /* line up with the title: 24px checkbox + 12px gap */
+    }
+
+    /* Push Edit and Delete to the right, keeping the badge on the left */
+    .edit-button {
+        margin-left: auto;
+    }
+    
+    /* Bigger tap targets for fingers */
+    button {
+        padding: 10px 16px;
+    }
+
+    .task input[type="checkbox"]{
+        width: 24px;
+        height: 24px;
+    }
+}
+
