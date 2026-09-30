@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List Tests</title>
+    <style>
+        body {font-family: system-ui, sans-serif; margin: 24px; }
+        .pass {color: #16a34a; }
+        .fail { color: #dc2626; font-weight: bold; }
+        #summary {font-size: 1.2 rem; font-weight: bold; margin-top: 16px;}
+    </style>
+</head>
+<body>
+    <h1>To-Do List Tests</h1>
+    <p>Tests for the task logic in tasks.js. Open this file in a browser to run them.</p>
+    <ul id="results"></ul>
+    <p id="summary"></p>
+
+    <script src="tasks.js"></script>
+    <script>
+        /*
+        tests.html - automatic tests for tasks.js
+
+        Each test calls a function from tasks.js with known input and checks
+        the result against the expected value. Results are shown on the page
+        as pass (green) or fail (red), with a summary at the end.
+        Only tasks.js is tested, because it contains all the task logic and
+        does not depend on the page.
+        */
+
+        const results = document.getElementById("results");
+        let passed = 0;
+        let failed = 0;
+
+        /*
+        Records one test result on the page.
+        Values are compared as JSON text, so arrays and objects are compared
+        by their contents rather than by reference.
+        */
+
+        function check(description, actual, expected) {
+            const ok = JSON.stringify(actual) === JSON.stringify(expected);
+            const line = document.createElement("li");
+
+            if(ok) {
+                passed++;
+                line.className = "pass";
+                line.textContent = "✓ " + description;
+            }else{
+                failed++;
+                line.className = "fail";
+                line.textContent = "✗ " + description +
+                    "- expected " + JSON.stringify(expected) +
+                    ", got " + JSON.stringify(actual);
+            }
+            results.appendChild(line);
+        }
+
+        // ---------- createTask ----------
+        const created = createTask(1, "Buy milk  ", "  2 litres ", "high");
+        check("createTask: new task starts as pending", created.status, "pending");
+        check("createTask: title is trimmed", created.title, "Buy milk");
+        check("createTask: description is trimmed", created.description, "2 litres");
+        check("createTask: keeps the priority", created.priority, "high");
+
+        // ---------- addTask ----------
+        let list=[];
+        list = addTask(list, "Buy milk", "2 litres", "high");
+        list = addTask(list, "Call Mum", "", "medium");
+        check("addTask: adds tasks to the list", list.length, 2);
+        check("addTask: ids are 1 and 2", [list[0].id, list[1].id], [1, 2]);
+
+        const beforeEmpty = list;
+        check("addTask: empty title is rejected", addTask(list, "", "", "low"), beforeEmpty);
+        check("addTask: title of only spaces is rejected", addTask(list, "   ", "", "low"), beforeEmpty);
+
+        const original = [];
+        addTask(original, "Test", "", "low");
+        check("addTask: does not change the original list", original.length, 0);
+
+        // ---------- nextId ----------
+        check("nextId: empty list starts at 1", nextId([]), 1);
+        check("nextId: one more than the highest id",
+            nextId([{ id: 3 }, { id: 7 }, { id: 5 }]), 8);
+
+        // ---------- updateTask ----------
+        let updated = updateTask(list, 1, { priority: "low" });
+        check("updateTask: changes only the given field", updated[0].priority, "low");
+        check("updateTask: keeps the other fields", updated[0].title, "Buy milk");
+        check("updateTask: other tasks are unchanged", updated[1], list[1]);
+        check("updateTask: original task is not changed", list[0].priority, "high");
+
+        updated = updateTask(list, 1, { title: "Buy bread", description: "Wholemeal" });
+        check("updateTask: can change several fields",
+            [updated[0].title, updated[0].description], ["Buy bread", "Wholemeal"]);
+
+        check("updateTask: empty title is rejected",
+            updateTask(list, 1, { title: "   " }), list);
+        check("updateTask: unknown id changes nothing",
+            updateTask(list, 99, { title: "X" }), list);
+
+
+        // ---------- toggleTaskStatus ----------
+
+        let toggled = toggleTaskStatus(list, 1);
+        check("toggleTaskStatus: pending becomes complete", toggled[0].status, "complete");
+        toggled = toggleTaskStatus(toggled, 1);
+        check("toggleTaskStatus: complete becomes pending", toggled[0].status, "pending");
+        check("toggleTaskStatus: original task is not changed", list[0].status, "pending");
+        check("toggleTaskStatus: other tasks are unchanged",
+            toggleTaskStatus(list, 1)[1].status, "pending");
+        
+        // ---------- deleteTask ----------
+        const afterDelete = deleteTask(list, 1);
+        check("deleteTask: removes one task", afterDelete.length, 1);
+        check("deleteTask: removes the right task", afterDelete[0].title, "Call Mum");
+        check("deleteTask: unknown id changes nothing", deleteTask(list, 99), list);
+        check("deleteTask: original list is not changed", list.length, 2);
+
+        const renumbered = addTask(afterDelete, "New task", "", "low");
+        check("deleteTask + addTask: new id continues after the highest remaining id",
+            renumbered[1].id, 3);
+        
+        // ---------- Summary ----------
+        document.getElementById("summary").textContent = 
+            passed + "passed. " + failed + " failed";
+        document.getElementById("summary").className = failed === 0 ? "pass" :"fail";
+    </script>
+</body>
+</html>
