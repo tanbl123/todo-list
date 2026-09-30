@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-Do List</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="container">
+        <h1>My To-Do List</h1>
+        
+        <form id="task-form">
+            <label>Title:
+                <input type="text" id="task-title" maxlength="200" placeholder="What needs to be done?" required>
+            </label>
+
+            <label>Description:
+                <textarea id="task-description" maxlength="500" placeholder="Optional details"></textarea>
+            </label>
+ 
+            <label>Priority:
+                <select id="task-priority">
+                    <option value="high">High</option> 
+                    <option value="medium">Medium</option> 
+                    <option value="low">Low</option>        
+                </select>
+            </label>
+
+            <button type="submit" id="submit-button">Add Task</button>
+            <button type="button" id="cancel-button" hidden>Cancel</button>
+        </form>
+
+        <ul id="task-list"></ul>
+
+        <p id="empty-message">No tasks yet. Add one above!</p>
+    </main>
+
+    <script src="tasks.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
